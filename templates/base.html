@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Book Management System{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body {
+            background-color: #f1f4f8;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            width: 100%;
+            padding: 1rem 2rem;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .navbar-light-theme {
+            background-color: #35424a; /* Darker blue-gray color */
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.6rem;
+            color: #ffc107 !important; /* Gold color for logo */
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.1);
+        }
+
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            color: #ffffff !important;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #ffc107 !important; /* Gold color on hover */
+        }
+
+        .navbar-nav .nav-link::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: #ffc107; /* Gold underline */
+            left: 0;
+            bottom: -4px;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* Footer Styling */
+        .footer {
+            background-color: #35424a;
+            color: #ffffff;
+            padding: 1.5rem 0;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .footer p {
+            margin: 0;
+            color: #cccccc;
+        }
+
+        .footer a {
+            color: #ffc107; /* Gold color for links */
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #ffffff;
+        }
+
+        .social-icons a {
+            font-size: 1.3rem;
+            color: #ffc107;
+            margin: 0 0.6rem;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #ffffff;
+            transform: scale(1.2);
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light-theme shadow-sm">
+    <a class="navbar-brand" href="{% url 'book_list' %}">
+        <i class="fas fa-book-open"></i> Book Manager
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'book_create' %}"><i class="bi bi-plus-circle"></i> Add Book</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'book_list' %}"><i class="bi bi-list-ul"></i> Books List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'signup' %}"><i class="bi bi-person-plus-fill"></i> Sign Up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<!-- Footer -->
+<footer class="footer mt-5 text-center">
+    <div class="container">
+        <p>&copy; 2024 BookManager | All rights reserved.</p>
+        <div class="social-icons">
+            <a href="#" class="mx-2"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="mx-2"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="mx-2"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="mx-2"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

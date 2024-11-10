@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f1f4f8;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .signup-container {
+        max-width: 530px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        padding: 2rem;
+        margin: auto;
+        margin-bottom: 1rem; 
+    }
+
+    h1 {
+        font-weight: 700;
+        color: #35424a;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        border-radius: 25px;
+        padding-left: 15px;
+        border: 1px solid #ddd;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #ffc107;
+        box-shadow: 0 0 5px rgba(255, 193, 7, 0.4);
+    }
+
+    .btn-signup {
+        background-color: #ffc107;
+        border: none;
+        color: #ffffff;
+        font-weight: bold;
+        border-radius: 25px;
+        padding: 10px;
+        width: 100%;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-signup:hover {
+        background-color: #e0a800;
+    }
+
+    .login-link {
+        color: #ffc107;
+    }
+
+    .login-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Adding spacing at the bottom of the page */
+    .content-wrapper {
+        min-height: calc(100vh - 200px); /* Adjust as needed based on header/footer height */
+        padding-bottom: 50px; /* Extra padding to avoid overlap with footer */
+    }
+</style>
+
+<div class="content-wrapper d-flex justify-content-center align-items-center">
+    <div class="signup-container">
+        <h1>Create a New Account</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-signup">Sign Up</button>
+        </form>
+        <p class="text-center mt-3">Already have an account? <a href="{% url 'login' %}" class="login-link">Log In</a></p>
+    </div>
+</div>
+{% endblock %}
