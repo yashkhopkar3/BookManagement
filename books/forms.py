@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from .models import Book
 
 class BookForm(forms.ModelForm):
@@ -6,4 +8,18 @@ class BookForm(forms.ModelForm):
     
     class Meta:
         model = Book
-        fields = ['title', 'author', 'isbn', 'published_date', 'description', 'pdf', 'image']
+        fields = ['title', 'author', 'isbn', 'published_date', 'description', 'pdf', 'image','available']
+
+class CustomUserCreationForm(UserCreationForm):
+    username = forms.CharField(
+        required=True, 
+        widget=forms.TextInput(attrs={'placeholder': 'Username'})
+    )
+    email = forms.EmailField(
+        required=True, 
+        widget=forms.EmailInput(attrs={'placeholder': 'Email'})
+    )
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']

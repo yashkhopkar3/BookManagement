@@ -1,20 +1,23 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from .models import Book
 from .forms import BookForm
+from .forms import CustomUserCreationForm
+from django.contrib import messages
+from django.contrib.auth.forms import UserChangeForm
+from django.db.models import Q
 
 def signup(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('book_list')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
 
 def login_view(request):
@@ -25,6 +28,7 @@ def login_view(request):
             password = form.cleaned_data.get('password')
             user = authenticate(request, username=username, password=password)
             if user is not None:
+                messages.success(request, 'User Logged in successfully!')
                 login(request, user)
                 return redirect('book_list')
     else:
@@ -32,13 +36,58 @@ def login_view(request):
     
     return render(request, 'registration/login.html', {'form': form})
 
+@login_required
+def edit_profile(request):
+    user = request.user
+
+    # Handling form submission
+    if request.method == 'POST':
+        form = UserChangeForm(request.POST, instance=user) 
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('profile_edit')  
+    else:
+        form = UserChangeForm(instance=user)  
+
+    return render(request, 'profile_edit.html', {'form': form})
+
+
+def contact_us(request):
+    return render(request, 'contact_us.html')
+
 def logout_view(request):
     logout(request)
     return redirect('book_list')
 
+def book_search(request):
+    query = request.GET.get('q')
+    
+    if request.user.is_authenticated:
+        if query:
+            books = Book.objects.filter(
+                Q(title__icontains=query) & (Q(user=request.user) | Q(available=Book.GLOBAL))
+            )
+        else:
+            books = Book.objects.filter(user=request.user) | Book.objects.filter(available=Book.GLOBAL)
+    else:
+        if query:
+            books = Book.objects.filter(
+                Q(title__icontains=query) & Q(available=Book.GLOBAL)
+            )
+        else:
+            books = Book.objects.filter(available=Book.GLOBAL)
+    
+    return render(request, 'books/book_search_results.html', {'books': books, 'query': query})
+
 def book_list(request):
-    books = Book.objects.all()
+    if request.user.is_authenticated:
+        books = Book.objects.filter(user=request.user) | Book.objects.filter(available=Book.GLOBAL)
+    else:
+        books = Book.objects.all()
+    
     return render(request, 'books/book_list.html', {'books': books})
+
 
 @login_required
 def book_detail(request, pk):
@@ -55,10 +104,14 @@ def book_create(request):
     if request.method == "POST":
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            book = form.save(commit=False)
+            book.user = request.user 
+            book.save()  
+            messages.success(request, 'Book added successfully!')
             return redirect('book_list')
     else:
         form = BookForm()
+    
     return render(request, 'books/book_form.html', {'form': form})
 
 @login_required
@@ -68,6 +121,7 @@ def book_update(request, pk):
         form = BookForm(request.POST, request.FILES, instance=book)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Book updated successfully!')
             return redirect('book_detail', pk=book.pk)
     else:
         form = BookForm(instance=book)
