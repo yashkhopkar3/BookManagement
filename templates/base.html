@@ -1,18 +1,30 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Book Management System{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <style>
         body {
-            background-color: #f1f4f8;
+            background: url("{% static 'images/bookb.jpg' %}") right center repeat;
+            background-size: cover;
             font-family: 'Arial', sans-serif;
+            margin: 0;
+        }
+
+        .main-content-wrapper {
+            min-height: calc(100vh - 130px);
+            background: url("{% static 'images/bookbackg.jpg' %}") right center no-repeat;
+            background-size: contain;
+            padding-top: 5px;
+            padding-bottom: 0px;
         }
 
         /* Specific navbar styles */
@@ -113,23 +125,28 @@
         /* Mobile dropdown for profile options */
         @media (max-width: 768px) {
             .book-manager-navbar .profile-options {
-                display: none; /* Hide profile options on larger screens */
+                display: none;
+                /* Hide profile options on larger screens */
             }
 
             .book-manager-navbar .navbar .dropdown-menu {
-                display: block; /* Show the dropdown in mobile view */
+                display: block;
+                /* Show the dropdown in mobile view */
             }
 
             .book-manager-navbar .navbar-collapse {
-                text-align: center; /* Center items in the navbar on mobile */
+                text-align: center;
+                /* Center items in the navbar on mobile */
             }
 
             .book-manager-navbar .navbar-nav .nav-item {
-                margin: 0.5rem 0; /* Add spacing between nav items */
+                margin: 0.5rem 0;
+                /* Add spacing between nav items */
             }
 
             .book-manager-navbar .navbar-toggler {
-                margin-left: auto; /* Align toggler to the right */
+                margin-left: auto;
+                /* Align toggler to the right */
             }
 
             .book-manager-navbar .navbar-nav.profile-options {
@@ -143,6 +160,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Navbar -->
@@ -150,51 +168,57 @@
         <a class="navbar-brand" href="{% url 'book_list' %}">
             <i class="fas fa-book-open"></i> Book Manager
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <form class="form-inline my-2 my-lg-0 mx-auto" action="{% url 'book_search' %}" method="GET">
-                <input class="form-control mr-sm-2 search-bar" type="search" placeholder="Search books..." name="q" aria-label="Search">
+                <input class="form-control mr-sm-2 search-bar" type="search" placeholder="Search books..." name="q"
+                    aria-label="Search">
                 <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">Search</button>
             </form>
             <ul class="navbar-nav profile-options">
                 {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'book_create' %}"><i class="bi bi-plus-circle"></i> Add Book</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'profile_edit' %}"><i class="bi bi-pencil-fill"></i> Edit Profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contact_us' %}"><i class="bi bi-envelope-fill"></i> Contact Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="bi bi-person-circle"></i> {{ user.username }}
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'book_create' %}"><i class="bi bi-plus-circle"></i> Add Book</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'profile_edit' %}"><i class="bi bi-pencil-fill"></i> Edit
+                        Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contact_us' %}"><i class="bi bi-envelope-fill"></i> Contact Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="bi bi-person-circle"></i> {{ user.username }}
+                    </a>
+                </li>
                 {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'signup' %}"><i class="bi bi-person-plus-fill"></i> Sign Up</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'signup' %}"><i class="bi bi-person-plus-fill"></i> Sign Up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+                </li>
                 {% endif %}
             </ul>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        {% block content %}{% endblock %}
+    <div class="main-content-wrapper">
+        <div class="container mt-4">
+            {% block content %}{% endblock %}
+        </div>
     </div>
 
     <!-- Footer -->
-     <footer class="footer mt-5 text-center book-manager-footer">
+    <footer class="footer mt-5 text-center book-manager-footer">
         <div class="container">
             <p>&copy; 2024 BookManager | All rights reserved.</p>
             <div class="social-icons">
@@ -212,4 +236,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 
 </body>
+
 </html>
