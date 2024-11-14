@@ -22,6 +22,8 @@ class Book(models.Model):
         choices=AVAILABILITY_CHOICES,
         default=PRIVATE,
     )
+    liked_users = models.ManyToManyField(User, related_name='liked_books', blank=True)
+
     
 
 

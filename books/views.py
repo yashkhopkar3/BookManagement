@@ -8,6 +8,8 @@ from .forms import CustomUserCreationForm
 from django.contrib import messages
 from django.contrib.auth.forms import UserChangeForm
 from django.db.models import Q
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 def signup(request):
     if request.method == 'POST':
@@ -134,3 +136,22 @@ def book_delete(request, pk):
         book.delete()
         return redirect('book_list')
     return render(request, 'books/book_confirm_delete.html', {'book': book})
+
+@login_required
+@require_POST
+def like_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    user = request.user
+
+    if user in book.liked_users.all():
+        book.liked_users.remove(user)
+        liked = False
+    else:
+        book.liked_users.add(user)
+        liked = True
+
+    book.likes = book.liked_users.count()
+    book.save()
+
+    return JsonResponse({'success': True, 'liked': liked, 'likes': book.likes})
+
