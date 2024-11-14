@@ -96,10 +96,6 @@ def book_detail(request, pk):
     book = get_object_or_404(Book, pk=pk)
     return render(request, 'books/book_detail.html', {'book': book})
 
-@login_required
-def book_pdf_view(request, pk):
-    book = get_object_or_404(Book, pk=pk)
-    return render(request, 'books/book_pdf.html', {'book': book})
 
 @login_required
 def book_create(request):
